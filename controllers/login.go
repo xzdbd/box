@@ -9,6 +9,10 @@ type LoginController struct {
 	beego.Controller
 }
 
+type MinioController struct {
+	beego.Controller
+}
+
 func (c *LoginController) Get() {
 	c.TplName = "login.tpl"
 }
@@ -23,4 +27,10 @@ func (c *LoginController) Post() {
 
 	c.Data["loginStatus"] = loginStatus
 	c.TplName = "portal.tpl"
+}
+
+func (c *MinioController) Get() {
+	models.ListBuckets()
+	models.ListObjects()
+	c.TplName = "login.tpl"
 }
