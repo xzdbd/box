@@ -25,8 +25,14 @@ func (c *LoginController) Post() {
 
 	loginStatus := models.ValidateUserLogin(u)
 
-	c.Data["loginStatus"] = loginStatus
-	c.TplName = "portal.tpl"
+	if loginStatus {
+		c.Redirect("http://23.88.238.182:9000", 302)
+	} else {
+		c.Data["isLoginFail"] = true
+	}
+	c.TplName = "login.tpl"
+	//c.Data["loginStatus"] = loginStatus
+	//c.TplName = "portal.tpl"
 }
 
 func (c *MinioController) Get() {

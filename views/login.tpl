@@ -6,25 +6,10 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <link rel="stylesheet"  type="text/css" media="screen" href="/static/css/main.css"/>
-  <link href="/static/css/semantic/components/reset.min.css" rel="stylesheet">
-  <link href="/static/css/semantic/components/site.min.css" rel="stylesheet">
-  <link href="/static/css/semantic/components/container.min.css" rel="stylesheet">
-  <link href="/static/css/semantic/components/grid.min.css" rel="stylesheet">
-  <link href="/static/css/semantic/components/header.min.css" rel="stylesheet">
-  <link href="/static/css/semantic/components/image.min.css" rel="stylesheet">
-  <link href="/static/css/semantic/components/menu.min.css" rel="stylesheet">
-  <link href="/static/css/semantic/components/divider.min.css" rel="stylesheet">
-  <link href="/static/css/semantic/components/segment.min.css" rel="stylesheet">
-  <link href="/static/css/semantic/components/form.min.css" rel="stylesheet">
-  <link href="/static/css/semantic/components/input.min.css" rel="stylesheet">
-  <link href="/static/css/semantic/components/button.min.css" rel="stylesheet">
-  <link href="/static/css/semantic/components/list.min.css" rel="stylesheet">
-  <link href="/static/css/semantic/components/message.min.css" rel="stylesheet">
-  <link href="/static/css/semantic/components/icon.min.css" rel="stylesheet">
-
+  <link href="/static/css/semantic/semantic.min.css" rel="stylesheet">
+  
   <script src="//cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
-  <script src="/static/js/semantic/components/form.min.js"></script>
-  <script src="/static/js/semantic/components/transition.min.js"></script>
+  <script src="/static/js/semantic/semantic.min.js"></script>
   <style type="text/css">
     body {
       background-color: #DADADA;
@@ -109,7 +94,16 @@
           </div>
           <div class="ui fluid large teal submit button">Sign In</div>
         </div>
-        <div class="ui error message"></div>
+        <div class="ui error message" style="{{if .isLoginFail}}display: block{{else}}{{end}}">
+          {{if .isLoginFail}}
+          <ul class="list">
+            <li>
+              Your username and password did not match. Please try again.
+            </li>
+          </ul>
+          {{else}}
+          {{end}}
+        </div>
       </form>
       <div class="ui message">
       New to us? <a href="#">Sign Up</a>
