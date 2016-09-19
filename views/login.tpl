@@ -2,77 +2,120 @@
 
 <html>
 <head>
-  <title>Box Portal</title>
+  <title>Login - Box Portal</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <link rel="stylesheet"  type="text/css" media="screen" href="/static/css/main.css"/>
-
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-  <!-- Optional theme -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <link href="/static/css/semantic/components/reset.min.css" rel="stylesheet">
+  <link href="/static/css/semantic/components/site.min.css" rel="stylesheet">
+  <link href="/static/css/semantic/components/container.min.css" rel="stylesheet">
+  <link href="/static/css/semantic/components/grid.min.css" rel="stylesheet">
+  <link href="/static/css/semantic/components/header.min.css" rel="stylesheet">
+  <link href="/static/css/semantic/components/image.min.css" rel="stylesheet">
+  <link href="/static/css/semantic/components/menu.min.css" rel="stylesheet">
+  <link href="/static/css/semantic/components/divider.min.css" rel="stylesheet">
+  <link href="/static/css/semantic/components/segment.min.css" rel="stylesheet">
+  <link href="/static/css/semantic/components/form.min.css" rel="stylesheet">
+  <link href="/static/css/semantic/components/input.min.css" rel="stylesheet">
+  <link href="/static/css/semantic/components/button.min.css" rel="stylesheet">
+  <link href="/static/css/semantic/components/list.min.css" rel="stylesheet">
+  <link href="/static/css/semantic/components/message.min.css" rel="stylesheet">
+  <link href="/static/css/semantic/components/icon.min.css" rel="stylesheet">
 
   <script src="//cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+  <script src="/static/js/semantic/components/form.min.js"></script>
+  <script src="/static/js/semantic/components/transition.min.js"></script>
+  <style type="text/css">
+    body {
+      background-color: #DADADA;
+    }
+    body > .grid {
+      height: 100%;
+    }
+    .image {
+      margin-top: -100px;
+    }
+    .column {
+      max-width: 450px;
+    }
+  </style>
+  <script>
+  $(document)
+    .ready(function() {
+      $('.ui.form')
+        .form({
+          fields: {
+            username: {
+              identifier  : 'username',
+              rules: [
+                {
+                  type   : 'empty',
+                  prompt : 'Please enter your username'
+                } 
+              ]
+            },
+            password: {
+              identifier  : 'password',
+              rules: [
+                {
+                  type   : 'empty',
+                  prompt : 'Please enter your password'
+                }
+              ]
+            }
+          }
+        })
+      ;
+    })
+  ;
+  </script>
+  <style id="style-1-cropbar-clipper">/* Copyright 2014 Evernote Corporation. All rights reserved. */
+  .en-markup-crop-options {
+      top: 18px !important;
+      left: 50% !important;
+      margin-left: -100px !important;
+      width: 200px !important;
+      border: 2px rgba(255,255,255,.38) solid !important;
+      border-radius: 4px !important;
+  }
 
-  <!-- Latest compiled and minified JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  .en-markup-crop-options div div:first-of-type {
+      margin-left: 0px !important;
+}
+</style>
 </head>
-  <header class="navbar navbar-default navbar-static-top">
-    <div class="container">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="#">Box Portal</a>       
-      </div>
-      <p class="navbar-text navbar-right">
-        <a href="/login">Sign In</a>
-      </p>
-      <p class="navbar-text navbar-right">Register</p>     
-    </div>
-  </header>
-
-<div class="container-fluid" id="header-image">
-</div>
-
-<div id="main" class="container">
-  <div class="row">
-    <div class="col-md-7">
-      <div class="container">
-        <h2>Register</h2>
-        <p>Create an account to access box.xzdbd.com.</p>
-        <h2>What is Box?</h2>
-        <p>Box is a file storage and sharing portal.</p>
-        <button type="button" class="btn btn-primary">Register a Box ID</button>
-      </div>
-    </div>
-    <div class="col-md-5">
-      <div id="signin">
-        <h2>Sign In</h2>
-        <p>Sign in to Box</p>
-        <form enctype="application/x-www-form-urlencoded" method="post">
-          <div class="form-group">
-            <label for="username">USERNAME</label>
-            <input type="text" class="form-control" name="username" id="usernameInput" placeholder="username">
+<body>
+  <div class="ui middle aligned center aligned grid">
+    <div class="column">
+      <h2 class="ui teal image header">
+        <img src="/static/img/logo.jpeg" class="image">
+        <div class="content">
+          Sign In to <em>Box</em>
+        </div>
+      </h2>
+      <form class="ui large form" method="post" enctype="application/x-www-form-urlencoded">
+        <div class="ui stacked segment">
+          <div class="field">
+            <div class="ui left icon input">
+              <i class="user icon"></i>
+              <input type="text" name="username" placeholder="Username">
+            </div>
           </div>
-          <div class="form-group">
-            <label for="username">PASSWORD</label>
-            <input type="password" class="form-control" name="password" id="passwordInput" placeholder="password">
+          <div class="field">
+            <div class="ui left icon input">
+              <i class="lock icon"></i>
+              <input type="password" name="password" placeholder="Password">
+            </div>
           </div>
-          <button type="submit" class="btn btn-lg btn-primary">Sign In</button>
-        </form>
+          <div class="ui fluid large teal submit button">Sign In</div>
+        </div>
+        <div class="ui error message"></div>
+      </form>
+      <div class="ui message">
+      New to us? <a href="#">Sign Up</a>
       </div>
     </div>
   </div>
-</div>
-
-<div id="footer" class="container">
-  <ul id="footer-list" class="list-inline">
-    <li>ABOUT BOX</li>
-    <li>DOCS</li>
-    <li>POLICY</li>
-    <li>CONTACT</li>
-  </ul>  
-  <div id="footer-siteinfo">
-    <p>
-      Copyright © 2015-2016 xzdbd.com. All rights reserved.
-    </p>
-  </div>
-</div>
+</body>
+<div></div>
 </html>
