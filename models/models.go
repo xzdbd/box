@@ -14,10 +14,13 @@ type Userinfo struct {
 }
 
 func init() {
+	dbconn := beego.AppConfig.String("dbconnection")
+	beego.Trace("获取DB连接信息:", dbconn)
+
 	orm.RegisterDriver("postgres", orm.DRPostgres)
-	orm.RegisterDataBase("default", "postgres", "host=postgres-aws.cvu6sgmzm0nc.ap-northeast-1.rds.amazonaws.com user=box password=xzdbd1989 dbname=boxdb sslmode=require")
+	orm.RegisterDataBase("default", "postgres", dbconn)
 	orm.RegisterModel(new(Userinfo))
-	orm.Debug = true
+	//orm.Debug = true
 }
 
 func ValidateUserLogin(u Userinfo) bool {
