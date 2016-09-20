@@ -15,7 +15,7 @@ type Userinfo struct {
 
 func init() {
 	orm.RegisterDriver("postgres", orm.DRPostgres)
-	orm.RegisterDataBase("default", "postgres", "host=192.157.231.61 user=box password=xzdbd1989 dbname=boxdb sslmode=disable")
+	orm.RegisterDataBase("default", "postgres", "host=postgres-aws.cvu6sgmzm0nc.ap-northeast-1.rds.amazonaws.com user=box password=xzdbd1989 dbname=boxdb sslmode=require")
 	orm.RegisterModel(new(Userinfo))
 	orm.Debug = true
 }
