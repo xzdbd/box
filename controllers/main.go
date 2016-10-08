@@ -13,6 +13,10 @@ type MinioController struct {
 	beego.Controller
 }
 
+type HomeController struct {
+	beego.Controller
+}
+
 func (c *LoginController) Get() {
 	c.TplName = "login.tpl"
 }
@@ -26,17 +30,22 @@ func (c *LoginController) Post() {
 	loginStatus := models.ValidateUserLogin(u)
 
 	if loginStatus {
-		c.Redirect("http://23.88.238.182:9000", 302)
+		c.Redirect("/home", 302)
 	} else {
 		c.Data["isLoginFail"] = true
 	}
 	c.TplName = "login.tpl"
-	//c.Data["loginStatus"] = loginStatus
-	//c.TplName = "portal.tpl"
+}
+
+func (c *HomeController) Get() {
+	c.TplName = "home.tpl"
 }
 
 func (c *MinioController) Get() {
-	models.ListBuckets()
-	models.ListObjects()
+	//models.ListBuckets()
+	//models.PutObject()
+	//models.ListObjects()
+	objects := models.GetUserObjects("bucket1", "", false)
+	beego.Trace(objects)
 	c.TplName = "login.tpl"
 }
