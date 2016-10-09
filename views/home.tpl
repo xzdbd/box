@@ -10,37 +10,44 @@
   
   <script src="//cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
   <script src="/static/js/semantic/semantic.min.js"></script>
-  
-  
-</style>
+  <script type="text/javascript">
+    $(function (){
+      $('.message .close')
+        .on('click', function() {
+          $(this)
+            .closest('.message')
+            .transition('fade')
+          ;
+        })
+      ;
+    })
+  </script>
 </head>
 <body>
   <div class="ui container">
     <h1>文件列表</h1>
+    <div class="ui positive message">
+      <i class="close icon"></i>
+      <div class="header">
+        Welcome back!
+      </div>
+      <p>This is a special notification which you can dismiss if you're bored with it.</p>
+    </div>
     <table class="ui selectable olive table">
       <thead>
         <tr>
-          <th>名称</th>
-          <th>最后修改时间</th>
-          <th>共享</th>
+          <th class="nine wide">名称</th>
+          <th class="four wide">最后修改时间</th>
+          <th class="three wide">共享</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td><i class="folder icon">Folder1</i></td>
-          <td>2016-10-08</td>
-          <td>No</td>
+          <td><a href="/disk/home"><i class="folder icon">filename111.txt</i></a></td>
+          <td>2016-08-09 15:00</td>
+          <td><button class="ui primary button">共享</button></td>         
         </tr>
-        <tr>
-          <td><i class="folder icon">Folder2</i></td>
-          <td>2016-10-07</td>
-          <td>No</td>
-        </tr>
-        <tr>
-          <td>File1</td>
-          <td>2016-10-07</td>
-          <td>Yes</td>
-        </tr>
+        {{str2html .UserObjects}}
       </tbody>
     </table>  
   </div>

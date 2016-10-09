@@ -1,0 +1,4 @@
+appname = box
+httpport = 8097
+runmode = dev
+dbconnection = "host= user= password= dbname= sslmode=disable"

@@ -3,8 +3,10 @@ package models
 import (
 	"github.com/astaxie/beego"
 	"github.com/minio/minio-go"
+	"net/url"
 	"os"
 	"path"
+	"time"
 )
 
 var minioClient *minio.Client
@@ -29,7 +31,7 @@ func GetUserObjects(bucketName string, objectPrefix string, isRecursive bool) []
 
 	defer close(doneCh)
 
-	objectCh := minioClient.ListObjects("bucket1", "", isRecursive, doneCh)
+	objectCh := minioClient.ListObjects("bucket1", objectPrefix, isRecursive, doneCh)
 	for object := range objectCh {
 		if object.Err != nil {
 			beego.Trace("ListObjects Error:", object.Err)
@@ -38,6 +40,20 @@ func GetUserObjects(bucketName string, objectPrefix string, isRecursive bool) []
 		objects = append(objects, object)
 	}
 	return objects
+}
+
+func GetSharedUrl(objectName string, fileName string, expiryDays int) *url.URL {
+	// Set request parameters for content-disposition.
+	reqParams := make(url.Values)
+	reqParams.Set("response-content-disposition", "attachment; filename=\""+fileName+"\"")
+
+	// Generates a presigned url which expires in 30 days.
+	presignedURL, err := minioClient.PresignedGetObject("bucket1", objectName, time.Second*24*60*60*time.Duration(expiryDays), reqParams)
+	if err != nil {
+		beego.Trace("生成共享url出错：", err.Error())
+		return nil
+	}
+	return presignedURL
 }
 
 //for test
