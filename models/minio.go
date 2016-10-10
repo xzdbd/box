@@ -42,7 +42,7 @@ func GetUserObjects(bucketName string, objectPrefix string, isRecursive bool) []
 	return objects
 }
 
-func GetSharedUrl(objectName string, fileName string, expiryDays int) *url.URL {
+func GetSharedUrl(objectName string, fileName string, expiryDays int) (string, error) {
 	// Set request parameters for content-disposition.
 	reqParams := make(url.Values)
 	reqParams.Set("response-content-disposition", "attachment; filename=\""+fileName+"\"")
@@ -51,9 +51,9 @@ func GetSharedUrl(objectName string, fileName string, expiryDays int) *url.URL {
 	presignedURL, err := minioClient.PresignedGetObject("bucket1", objectName, time.Second*24*60*60*time.Duration(expiryDays), reqParams)
 	if err != nil {
 		beego.Trace("生成共享url出错：", err.Error())
-		return nil
+		return "", err
 	}
-	return presignedURL
+	return presignedURL.String(), nil
 }
 
 //for test

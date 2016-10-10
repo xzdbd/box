@@ -26,12 +26,8 @@
 <body>
   <div class="ui container">
     <h1>文件列表</h1>
-    <div class="ui positive message">
-      <i class="close icon"></i>
-      <div class="header">
-        Welcome back!
-      </div>
-      <p>This is a special notification which you can dismiss if you're bored with it.</p>
+    <div>
+      {{str2html .ShareMessage}}
     </div>
     <table class="ui selectable olive table">
       <thead>
@@ -43,9 +39,9 @@
       </thead>
       <tbody>
         <tr>
-          <td><a href="/disk/home"><i class="folder icon">filename111.txt</i></a></td>
+          <td><a href="/disk/home">filename111.txt</a></td>
           <td>2016-08-09 15:00</td>
-          <td><button class="ui primary button">共享</button></td>         
+          <td><button class="ui primary button" onclick="window.location.href='./share?objectName=objectname&fileName=filename'">共享</button></td>         
         </tr>
         {{str2html .UserObjects}}
       </tbody>
