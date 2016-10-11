@@ -21,6 +21,11 @@ type DiskController struct {
 }
 
 func (c *LoginController) Get() {
+	isLogin := c.GetSession("login")
+	if isLogin == "true" {
+		c.Redirect("/disk", 302)
+	}
+
 	c.TplName = "login.tpl"
 }
 
@@ -33,6 +38,7 @@ func (c *LoginController) Post() {
 	loginStatus := models.ValidateUserLogin(u)
 
 	if loginStatus {
+		c.SetSession("login", "true")
 		c.Redirect("/disk", 302)
 	} else {
 		c.Data["isLoginFail"] = true
@@ -41,24 +47,40 @@ func (c *LoginController) Post() {
 }
 
 func (c *DiskController) Get() {
+	isLogin := c.GetSession("login")
+	if isLogin != "true" {
+		c.Redirect("/login", 302)
+	}
+
 	c.Redirect("/disk/home", 302)
 }
 
 func (c *DiskController) Home() {
+	beego.Trace("start get session...")
+	isLogin := c.GetSession("login")
+	beego.Trace("get session end.", isLogin)
+	if isLogin != "true" {
+		c.Redirect("/login", 302)
+	}
+
 	params := c.Ctx.Input.Params()
 
 	c.Data["ShareMessage"] = ""
 
 	action := c.GetString("action")
-	if action == "share" {
+	switch action {
+	case "share":
 		objectName := c.GetString("objectName")
 		fileName := path.Base(objectName)
-		url, err := models.GetSharedUrl(objectName, fileName, 1)
+		url, err := models.GetSharedUrl(objectName, fileName, 30)
 		if err != nil {
 			beego.Trace("共享失败：", err)
 			c.Data["ShareMessage"] = renderShareFailMessage()
 		}
 		c.Data["ShareMessage"] = renderShareSuccessMessage(url)
+	case "logout":
+		c.SetSession("login", "false")
+		c.Redirect("/login", 302)
 	}
 
 	prefix := ""
@@ -70,7 +92,6 @@ func (c *DiskController) Home() {
 			break
 		}
 	}
-	beego.Trace("prefix:", prefix)
 	objects := models.GetUserObjects("bucket1", prefix, false)
 	objectHtmlTpl := renderUserObjects(objects, prefix)
 	c.Data["UserObjects"] = objectHtmlTpl
@@ -81,12 +102,10 @@ func renderUserObjects(objects []minio.ObjectInfo, prefix string) string {
 	htmlTpl := ""
 	for i := 0; i < len(objects); i++ {
 		object := objects[i]
-		beego.Trace(object.StorageClass, object.Key, object.Owner)
-		beego.Trace("is folder?", isObjectFolder(object))
 		if isObjectFolder(object) {
 			htmlTpl += "<tr><td><a href=\"/disk/home/" + object.Key + "\"><i class=\"folder icon\">" + object.Key + "</i></a></td><td>" + object.LastModified.String() + "</td><td></td></tr>"
 		} else {
-			htmlTpl += "<tr><td><a href=\"/disk/home/" + object.Key + "\">" + object.Key + "</a></td><td>" + object.LastModified.String() + "</td><td><button class=\"ui primary button\" onclick=\"window.location.href='/disk/home/" + prefix + "?objectName=" + object.Key + "&action=share'\">共享</button></td></tr>"
+			htmlTpl += "<tr><td>" + object.Key + "</td><td>" + object.LastModified.String() + "</td><td><button class=\"ui primary button\" onclick=\"window.location.href='/disk/home/" + prefix + "?objectName=" + object.Key + "&action=share'\">共享</button></td></tr>"
 		}
 
 	}
@@ -94,7 +113,7 @@ func renderUserObjects(objects []minio.ObjectInfo, prefix string) string {
 }
 
 func renderShareSuccessMessage(url string) string {
-	htmlTpl := "<div class=\"ui positive message\"><i class=\"close icon\"></i><div class=\"header\">共享完成!</div><p>请打开或复制以下链接来下载。</p><p><a href=" + url + ">" + url + "</a></p></div>"
+	htmlTpl := "<div class=\"ui positive message\"><i class=\"close icon\"></i><div class=\"header\">共享完成!</div><p>请复制以下链接来下载。</p><p>" + url + "</p></div>"
 	return htmlTpl
 }
 

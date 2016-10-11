@@ -12,7 +12,7 @@
   <script src="/static/js/semantic/semantic.min.js"></script>
   <style type="text/css">
     body {
-      background-color: #DADADA;
+      background-color: #364150;
     }
     body > .grid {
       height: 100%;
@@ -94,6 +94,8 @@
       <div class="ui message">
       New to us? <a href="#">Sign Up</a>
       </div>
+      <div class="ui blue label">2016 © xzdbd All Rights Reserved.</div>
+      <div class="ui orange label">Version: 0.0.1</div>
     </div>
   </div>
 </body>
