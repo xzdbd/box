@@ -7,5 +7,7 @@ import (
 )
 
 func main() {
+	beego.SetLogger("file", `{"filename":"logs/server.log"}`)
+	beego.BeeLogger.Async()
 	beego.Run()
 }
