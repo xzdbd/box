@@ -21,11 +21,6 @@ type DiskController struct {
 }
 
 func (c *LoginController) Get() {
-	isLogin := c.GetSession("login")
-	if isLogin == "true" {
-		c.Redirect("/disk", 302)
-	}
-
 	c.TplName = "login.tpl"
 }
 
@@ -38,6 +33,7 @@ func (c *LoginController) Post() {
 	loginStatus := models.ValidateUserLogin(u)
 
 	if loginStatus {
+		beego.Trace("登陆成功！设置session为true")
 		c.SetSession("login", "true")
 		c.Redirect("/disk", 302)
 	} else {
@@ -47,22 +43,10 @@ func (c *LoginController) Post() {
 }
 
 func (c *DiskController) Get() {
-	isLogin := c.GetSession("login")
-	if isLogin != "true" {
-		c.Redirect("/login", 302)
-	}
-
 	c.Redirect("/disk/home", 302)
 }
 
 func (c *DiskController) Home() {
-	beego.Trace("start get session...")
-	isLogin := c.GetSession("login")
-	beego.Trace("get session end.", isLogin)
-	if isLogin != "true" {
-		c.Redirect("/login", 302)
-	}
-
 	params := c.Ctx.Input.Params()
 
 	c.Data["ShareMessage"] = ""

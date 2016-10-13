@@ -50,7 +50,7 @@ func GetSharedUrl(objectName string, fileName string, expiryDays int) (string, e
 	// Generates a presigned url which expires in 30 days.
 	presignedURL, err := minioClient.PresignedGetObject("bucket1", objectName, time.Second*24*60*60*time.Duration(expiryDays), reqParams)
 	if err != nil {
-		beego.Trace("生成共享url出错：", err.Error())
+		beego.Error("生成共享url出错：", err.Error())
 		return "", err
 	}
 	return presignedURL.String(), nil
