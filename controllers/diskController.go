@@ -8,40 +8,6 @@ import (
 	"strconv"
 )
 
-type LoginController struct {
-	beego.Controller
-}
-
-type MinioController struct {
-	beego.Controller
-}
-
-type DiskController struct {
-	beego.Controller
-}
-
-func (c *LoginController) Get() {
-	c.TplName = "login.tpl"
-}
-
-func (c *LoginController) Post() {
-	u := models.Userinfo{}
-	if err := c.ParseForm(&u); err != nil {
-		beego.Trace(err.Error())
-	}
-
-	loginStatus := models.ValidateUserLogin(u)
-
-	if loginStatus {
-		beego.Trace("登陆成功！设置session为true")
-		c.SetSession("login", "true")
-		c.Redirect("/disk", 302)
-	} else {
-		c.Data["isLoginFail"] = true
-	}
-	c.TplName = "login.tpl"
-}
-
 func (c *DiskController) Get() {
 	c.Redirect("/disk/home", 302)
 }
@@ -76,8 +42,12 @@ func (c *DiskController) Home() {
 			break
 		}
 	}
-	objects := models.GetUserObjects("bucket1", prefix, false)
-	objectHtmlTpl := renderUserObjects(objects, prefix)
+	//objects := models.GetUserObjects("bucket1", prefix, false)
+	myObjects := models.MyObjects{}
+	myObjects.GetObjects("bucket1", prefix, false)
+	beego.Trace(myObjects.FolderObjects, myObjects.FileObjects)
+	//objectHtmlTpl := renderUserObjects(objects, prefix)
+	objectHtmlTpl := myObjects.RenderMyObjects()
 	c.Data["UserObjects"] = objectHtmlTpl
 	c.TplName = "home.tpl"
 }
@@ -112,15 +82,4 @@ func isObjectFolder(object minio.ObjectInfo) bool {
 	} else {
 		return true
 	}
-}
-
-func (c *MinioController) Get() {
-	//models.ListBuckets()
-	//models.PutObject()
-	//models.ListObjects()
-	//objects := models.GetUserObjects("bucket1", "", false)
-	//beego.Trace(objects)
-	url, _ := models.GetSharedUrl("test/logo", "logo.jpeg", 1)
-	beego.Trace("url:", url)
-	c.TplName = "login.tpl"
 }

@@ -9,20 +9,108 @@ import (
 	"time"
 )
 
+type MinioObject struct {
+	minio.ObjectInfo
+	IsFolder bool
+}
+
+type FileObject struct {
+	MinioObject
+	Dir  string
+	Name string
+}
+
+type FolderObject struct {
+	MinioObject
+	Name string
+}
+
+type MyObjects struct {
+	FolderObjects []FolderObject
+	FileObjects   []FileObject
+}
+
 var minioClient *minio.Client
-var err error
 
 func init() {
-	endpoint := "23.88.238.182:9000"
-	accessKeyID := "IS9ICPLHJPDUJH9CZ7WS"
-	secretAccessKey := "Ku1G/oUb+0BFjRRenNzjHOu+xtGG9Z/ZK3uXSGM8"
-	useSSL := false
+	endpoint := beego.AppConfig.String("minioserver")
+	accessKeyID := beego.AppConfig.String("minioaccesskey")
+	secretAccessKey := beego.AppConfig.String("miniosecretkey")
+	useSSL, er := beego.AppConfig.Bool("miniossl")
+	if er != nil {
+		beego.Warning("get AppConfig: miniossl failed, set to false by default. Error:", er)
+		useSSL = false
+	}
 
+	var err error
 	minioClient, err = minio.New(endpoint, accessKeyID, secretAccessKey, useSSL)
 	if err != nil {
-		beego.Trace("初始化minio client失败：", err.Error())
+		beego.Error("Initialize Minio client failed. Error:", err)
 	}
-	beego.Trace("初始化minio client完成：", minioClient)
+	beego.Trace("Initialize Minio client completed. Minio client info:", minioClient)
+}
+
+func (m *MyObjects) GetObjects(bucketName string, objectPrefix string, isRecursive bool) {
+	doneCh := make(chan struct{})
+
+	defer close(doneCh)
+
+	objectCh := minioClient.ListObjects("bucket1", objectPrefix, isRecursive, doneCh)
+	for object := range objectCh {
+		if object.Err != nil {
+			beego.Error("ListObjects Error:", object.Err)
+			continue
+		}
+		minioObject := new(MinioObject)
+		minioObject.ObjectInfo = object
+		minioObject.SetIsFolder()
+
+		if minioObject.IsFolder {
+			folderObject := new(FolderObject)
+			folderObject.MinioObject = *minioObject
+			folderObject.SetName()
+			m.FolderObjects = append(m.FolderObjects, *folderObject)
+		} else {
+			fileObject := new(FileObject)
+			fileObject.MinioObject = *minioObject
+			fileObject.SetName()
+			fileObject.SetDir()
+			m.FileObjects = append(m.FileObjects, *fileObject)
+		}
+	}
+}
+
+func (m MyObjects) RenderMyObjects() string {
+	htmlTpl := ""
+	for i := 0; i < len(m.FolderObjects); i++ {
+		folderObject := m.FolderObjects[i]
+		htmlTpl += "<tr><td><a href=\"/disk/home/" + folderObject.Key + "\"><i class=\"folder icon\">" + folderObject.Name + "</i></a></td><td>" + folderObject.LastModified.String() + "</td><td></td></tr>"
+	}
+	for i := 0; i < len(m.FileObjects); i++ {
+		fileObject := m.FileObjects[i]
+		htmlTpl += "<tr><td>" + fileObject.Name + "</td><td>" + fileObject.LastModified.String() + "</td><td><button class=\"ui primary button\" onclick=\"window.location.href='/disk/home/" + fileObject.Dir + "?objectName=" + fileObject.Key + "&action=share'\">共享</button></td></tr>"
+	}
+	return htmlTpl
+}
+
+func (m *MinioObject) SetIsFolder() {
+	if m.StorageClass == "STANDARD" {
+		m.IsFolder = false
+	} else {
+		m.IsFolder = true
+	}
+}
+
+func (f *FileObject) SetName() {
+	f.Name = path.Base(f.Key)
+}
+
+func (f *FolderObject) SetName() {
+	f.Name = path.Base(f.Key)
+}
+
+func (f *FileObject) SetDir() {
+	f.Dir = path.Dir(f.Key)
 }
 
 func GetUserObjects(bucketName string, objectPrefix string, isRecursive bool) []minio.ObjectInfo {

@@ -14,13 +14,11 @@ func init() {
 	beego.Router("/login", &controllers.LoginController{})
 	beego.Router("/disk", &controllers.DiskController{})
 	beego.AutoRouter(&controllers.DiskController{})
-	beego.Router("/minio", &controllers.MinioController{})
 }
 
 func validateUserLogin() {
 	var FilterUser = func(ctx *context.Context) {
 		isLogin, ok := ctx.Input.Session("login").(string)
-		beego.Trace("Login session info:", isLogin)
 		if !ok && ctx.Request.RequestURI != "/login" {
 			ctx.Redirect(302, "/login")
 		}
