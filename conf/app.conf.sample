@@ -1,4 +1,21 @@
 appname = box
 httpport = 8097
 runmode = dev
-dbconnection = "host= user= password= dbname= sslmode=disable"
+
+# database
+dbconnection = "host= user= password= dbname= sslmode="
+
+# session
+sessionon = true
+sessionname = box
+sessiongcmaxlifetime = 3600
+sessioncookielifetime = 3600
+sessionhashkey = 
+sessionprovider = "postgresql"
+sessionproviderconfig = "host= user= password= dbname= sslmode="
+
+# minio
+minioserver = 
+minioaccesskey = 
+miniosecretkey = 
+miniossl = 
